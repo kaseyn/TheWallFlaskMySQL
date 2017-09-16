@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>The Wall</title>
+</head>
+<body>
+	<div id="top_bar">
+		<h1>The Wall</h1>
+		<h3>Welcome {{ first_name }}</h3>
+		<form action="/logout" method="POST">
+			<input type="submit" value="Log Out">
+		</form>
+	</div>
+	<div id="main">
+		<h2>Post A Message</h2>
+		<form action="/post_message" method="POST">
+			<textarea name="message"></textarea>
+			<input type="submit" value="Post Message">
+		</form>
+		{% if all_messages %}
+			{% for x in all_messages %}
+				<p class="author">{{ x["author"] }} - {{ x["post_time"] }}</p>
+				<p class="message">{{ x["message"] }}</p>
+				<h4>Post A Comment:</h4>
+				<form action="#" method="POST">
+					<textarea class="comment_textarea" name="comment"></textarea>
+					<input type="submit" value="Post Comment">
+				</form>
+			{% endfor %}
+		{% endif %}
+	</div>
+</body>
+</html>
