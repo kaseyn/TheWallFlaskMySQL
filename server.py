@@ -97,7 +97,10 @@ def wall():
 	query = "SELECT users.id, CONCAT_WS(' ', users.first_name, users.last_name) AS author, messages.id, messages.message, DATE_FORMAT(messages.created_at, '%M %D, %Y %l:%i %p') AS post_time FROM users JOIN messages ON users.id = messages.user_id ORDER BY messages.created_at DESC"
 	all_messages = mysql.query_db(query)
 
-	return render_template("wall.html", first_name=first_name, all_messages=all_messages)
+	query = "SELECT CONCAT_WS(' ', users.first_name, users.last_name) AS author, comments.message_id, comments.comment, DATE_FORMAT(comments.created_at, '%M %D, %Y %l:%i %p') AS post_time FROM users JOIN comments ON users.id = comments.user_id ORDER BY comments.created_at"
+	all_comments = mysql.query_db(query)
+
+	return render_template("wall.html", first_name=first_name, all_messages=all_messages, all_comments=all_comments)
 
 @app.route("/post_message", methods=["POST"])
 def post_message():
@@ -105,6 +108,17 @@ def post_message():
 	data = {
 		"user_id": session["id"],
 		"message": request.form["message"]
+	}
+	mysql.query_db(query, data)
+	return redirect("/wall")
+
+@app.route("/post_comment/<message_id>", methods=["POST"])
+def post_comment(message_id):
+	query = "INSERT INTO comments (message_id, user_id, comment, created_at, updated_at) VALUES (:message_id, :user_id, :comment, NOW(), NOW())"
+	data = {
+		"message_id": message_id,
+		"user_id": session["id"],
+		"comment": request.form["comment"]
 	}
 	mysql.query_db(query, data)
 	return redirect("/wall")

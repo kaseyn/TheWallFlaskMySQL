@@ -14,15 +14,21 @@
 	<div id="main">
 		<h2>Post A Message</h2>
 		<form action="/post_message" method="POST">
-			<textarea name="message"></textarea>
+			<textarea class="message_textarea" name="message"></textarea>
 			<input type="submit" value="Post Message">
 		</form>
 		{% if all_messages %}
 			{% for x in all_messages %}
-				<p class="author">{{ x["author"] }} - {{ x["post_time"] }}</p>
+				<p class="message_author">{{ x["author"] }} - {{ x["post_time"] }}</p>
 				<p class="message">{{ x["message"] }}</p>
+				{% for y in all_comments %}
+					{% if x["id"] == y["message_id"] %}
+						<p class="comment_author">{{ y["author"] }} - {{ y["post_time"] }}</p>
+						<p class="comment">{{ y["comment"] }}</p>
+					{% endif %}
+				{% endfor %}
 				<h4>Post A Comment:</h4>
-				<form action="#" method="POST">
+				<form action="/post_comment/{{ x['id'] }}" method="POST">
 					<textarea class="comment_textarea" name="comment"></textarea>
 					<input type="submit" value="Post Comment">
 				</form>
